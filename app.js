@@ -5,23 +5,22 @@ const passport = require('passport');
 const crypto = require('crypto');
 const routes = require('./routes');
 const connection = require('./config/database');
+require('dotenv').config();
 
 // Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require('connect-mongo')(session);
-
+// Create the Express application
+const app = express();
 // Need to require the entire Passport config module so app.js knows about it
 require('./config/passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 /**
  * -------------- GENERAL SETUP ----------------
  */
-
-// Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
-require('dotenv').config();
-
-// Create the Express application
-const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -47,8 +46,16 @@ app.use(session({
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
 
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req, res, next) => {
+    console.log(req.session);
+    console.log(req.user);
+    next();
+});
+
 
 
 /**
