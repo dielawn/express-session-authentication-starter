@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-var passport = require('passport');
-var crypto = require('crypto');
-var routes = require('./routes');
+const passport = require('passport');
+const crypto = require('crypto');
+const routes = require('./routes');
 const connection = require('./config/database');
 
 // Package documentation - https://www.npmjs.com/package/connect-mongo
@@ -20,7 +20,7 @@ require('./config/passport');
 require('dotenv').config();
 
 // Create the Express application
-var app = express();
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -29,6 +29,17 @@ app.use(express.urlencoded({extended: true}));
 /**
  * -------------- SESSION SETUP ----------------
  */
+const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions'})
+
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false, 
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24  //equals 1 day 
+    }
+}))
 
 // TODO
 
