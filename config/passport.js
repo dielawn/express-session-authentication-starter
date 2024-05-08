@@ -15,13 +15,12 @@ const verifyCallback = (username, password, done) => {
     User.findOne({ username: username })
         .then((user) => {
             //no error, user undefined
-            console.log(user)
             if (!user) { 
                 return done(null, false) 
             } 
 
             const isValid = validPassword(password, user.hash, user.salt);
-            console.log(isValid)
+            
             if (isValid) {
                 //no error, user is valid
                 return done(null, user);
